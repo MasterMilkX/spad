@@ -6,6 +6,7 @@ SCREEN_SIZE = 250
 SPAD_SIZE = 100
 OFFSET = (SCREEN_SIZE - SPAD_SIZE) / 2
 EYE_SIZE = SPAD_SIZE / 5
+onscreen = True
 
 #PALETTE
 GAMEBOY_PALETTE = [[155, 188, 15],[139, 172, 15], [48, 98, 48], [15, 56, 15], [0,0,0]]
@@ -31,21 +32,26 @@ def main():
 	while play:
 		global face
 		global blinking
+		global onscreen
+
+		onscreen = bool(pygame.mouse.get_focused())
 
 		#interaction events
 		for event in pygame.event.get():
+			#close window functions
 			if event.type == pygame.QUIT:
 				play = False
-			elif event.type == OPEN:
-				if(blinking):
-					blinking = False
-					face = "neutral"
-			elif event.type == CLOSE:
-				if(not blinking):
-					blinking = True
-					face = "closed_eyes"
 
-
+			#neutral-blinking functions
+			if onscreen:
+				if event.type == OPEN:
+					if(blinking):
+						blinking = False
+						face = "neutral"
+				elif event.type == CLOSE:
+					if(not blinking):
+						blinking = True
+						face = "closed_eyes"
 		#draw
 		screen.fill(PALETTE[0])
 		spad(0, 0, 0, 0)
@@ -64,5 +70,7 @@ def spad(x, y, ex, ey):
 	elif(face == "closed_eyes"):
 		pygame.draw.rect(screen, (PALETTE[2]), pygame.Rect(ox + EYE_SIZE, oy + ((5/2)*EYE_SIZE), EYE_SIZE, EYE_SIZE/4))
 		pygame.draw.rect(screen, (PALETTE[2]), pygame.Rect(ox + (3*EYE_SIZE), oy + ((5/2)*EYE_SIZE), EYE_SIZE, EYE_SIZE/4))
+
+
 
 main()
